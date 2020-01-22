@@ -23,7 +23,7 @@ void setup() {
   eightball.resize(20,20);
   water.resize(400,100);
   size(800, 600);
-
+  timer=60;
   lground= new FBox(400, 100);
   lground.setNoStroke();
   lground.setPosition(200, 575);
@@ -83,9 +83,12 @@ void setup() {
 }
 
 void draw() {
-  text(
+ timer--;
+ if(timer<0){
   background(sunset);
- 
+  fill(255);
+  textSize(50);
+  
   leftCanJump=false;
   rightCanJump=false;
   lplayer.getContacts();
@@ -105,8 +108,7 @@ void draw() {
     if (c.contains(rground)) rightCanJump=true;
     j++;
   }
-  
- ArrayList<FContact> contacts3=ball.getContacts();
+  ArrayList<FContact> contacts3=ball.getContacts();
   int k=0;
   while(k<contacts3.size()){
    FContact c=contacts3.get(k);
@@ -114,17 +116,16 @@ void draw() {
      lscore++;
      ball.setPosition(lplayer.getX(),200);
     ball.setVelocity(0,0);
+    timer=60;
    }
    if(c.contains(lground)){
      rscore++;
      ball.setPosition(rplayer.getX(),200);
       ball.setVelocity(0,0);
+      timer=60;
    }
     k++;
   }
-
-  
-  
   if(lplayer.getX()>=375) lplayer.setPosition(375,lplayer.getY());
  if(rplayer.getX()<=425) rplayer.setPosition(425,rplayer.getY());
   if (wkey&&leftCanJump) lplayer.addImpulse(0, -2000);
@@ -135,6 +136,23 @@ void draw() {
  if(rightkey) rplayer.addImpulse(300,0);
   world.step();
   world.draw();
+ }
+ text("LEFT:"+lscore,100,100);
+  text("RIGHT:"+rscore,500,100);
+if(lscore==3){
+ text("LEFT WINS",250,300);
+ timer=100;
+ timer++;
+ text("Click anywhere to restart",250,500);
+ if(mousePressed){lscore=0;rscore=0;timer=60;}
+}
+if(rscore==3){
+ text("RIGHT WINS",250,300);
+ text("click anywhere to restart",250,500);
+ if(mousePressed){lscore=0;rscore=0;timer=60;}
+ timer=100;
+ timer++;
+}
 }
 
 void keyPressed() {
